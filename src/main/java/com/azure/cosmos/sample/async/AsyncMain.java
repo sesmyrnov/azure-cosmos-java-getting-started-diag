@@ -34,7 +34,7 @@ public class AsyncMain {
 
     private CosmosAsyncClient client;
 
-    private final String databaseName = "AzureSampleFamilyDB";
+    private final String databaseName = "PartitioningDemo";
     private final String containerName = "FamilyContainer";
 
     private CosmosAsyncDatabase database;
@@ -79,7 +79,7 @@ public class AsyncMain {
             .key(AccountSettings.MASTER_KEY)
             //  Setting the preferred location to Cosmos DB Account region
             //  West US is just an example. User should set preferred location to the Cosmos DB region closest to the application
-            .preferredRegions(Collections.singletonList("West US"))
+            //.preferredRegions(Collections.singletonList("West US"))
             .consistencyLevel(ConsistencyLevel.EVENTUAL)
             //  Setting content response on write enabled, which enables the SDK to return response on write operations.
             .contentResponseOnWriteEnabled(true)
@@ -233,11 +233,11 @@ public class AsyncMain {
                 "SELECT * FROM Family WHERE Family.lastName IN ('Andersen', 'Wakefield', 'Johnson')", queryOptions, Family.class);
 
         try {
-
             pagedFluxResponse.byPage(preferredPageSize).flatMap(fluxResponse -> {
                 logger.info("Got a page of query result with " +
                         fluxResponse.getResults().size() + " items(s)"
-                        + " and request charge of " + fluxResponse.getRequestCharge());
+                        + " and request charge of " + fluxResponse.getRequestCharge() 
+                        + "\n\n\n FULL request diagnostics: \n\n\n" + fluxResponse.getCosmosDiagnostics().toString());
 
                 logger.info("Item Ids " + fluxResponse
                         .getResults()
